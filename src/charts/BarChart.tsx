@@ -8,6 +8,7 @@ import {
   Title,
   Tooltip,
   Legend,
+  ChartOptions,
 } from 'chart.js';
 
 ChartJS.register(
@@ -45,7 +46,7 @@ const getGraphData = (datatypeLabels: string[], scoresData: number[]) => {
   };
 };
 
-const getoptions = (title: string) => {
+const getoptions = (title: string): ChartOptions<'bar'> => {
   return {
     responsive: true,
     scales: {
@@ -65,11 +66,9 @@ const getoptions = (title: string) => {
           text: 'Association Score',
         },
         ticks: {
-          min: 0.0,
-          max: 1.0,
           stepSize: 0.25,
-          callback(tick: number) {
-            return tick.toFixed(3);
+          callback(tick: string | number) {
+            return Number(tick).toFixed(3);
           },
         },
         grid: {

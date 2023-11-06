@@ -7,6 +7,7 @@ import {
   Filler,
   Tooltip,
   Legend,
+  ChartOptions,
 } from 'chart.js';
 import { Radar } from 'react-chartjs-2';
 
@@ -43,10 +44,9 @@ const getGraphData = (datatypeLabels: string[], scoresData: number[]) => {
   };
 };
 
-const getoptions = (title: string) => {
+const getoptions = (title: string): ChartOptions<'radar'> => {
   return {
     responsive: true,
-    beginAtZero: true,
     scales: {
       r: {
         grid: {
@@ -55,15 +55,18 @@ const getoptions = (title: string) => {
           lineWidth: 2,
         },
         angleLines: {
-          borderColor: 'rgb(255, 255, 255)',
+          color: 'rgb(211,211,211)',
           lineWidth: 2,
         },
         min: -0.1,
         max: 1,
         ticks: {
           stepSize: 0.25,
-          callback(tick: number) {
-            return tick.toFixed(3);
+          callback(tickValue: number | string) {
+            if (typeof tickValue === 'number') {
+              return tickValue.toFixed(3);
+            }
+            return tickValue;
           },
         },
       },
