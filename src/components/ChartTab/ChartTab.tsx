@@ -1,7 +1,7 @@
 import React, { MouseEvent } from 'react';
-import '../styles/ChartTabStyles.css';
-import BarChart from '../charts/BarChart';
-import RadarChart from '../charts/RadarChart';
+import '../../styles/ChartTabStyles.css';
+import BarChart from '../../charts/BarChart';
+import RadarChart from '../../charts/RadarChart';
 
 interface ChartTabProps {
   index: number;

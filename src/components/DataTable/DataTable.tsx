@@ -1,8 +1,8 @@
 import React, { Fragment } from 'react';
 import { useQuery } from '@apollo/client';
-import FETCH_TARGETS_LIST from '../services/queries';
-import '../styles/DataTableStyles.css';
-import ChartTab from './ChartTab';
+import FETCH_TARGETS_LIST from '../../services/queries';
+import '../../styles/DataTableStyles.css';
+import ChartTab from '../ChartTab/ChartTab';
 
 interface DataType {
   disease: {
@@ -31,7 +31,7 @@ function DataTable() {
   };
 
   if (loading) {
-    return <div id="loading-animation" />;
+    return <div data-testid="loading-animation" />;
   }
 
   if (error) {
