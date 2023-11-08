@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { useState, Fragment } from 'react';
 import { useQuery } from '@apollo/client';
 import FETCH_TARGETS_LIST from '../../services/queries';
 import '../../styles/DataTableStyles.css';
@@ -22,20 +22,22 @@ interface DataType {
 
 function DataTable() {
   const { data, loading, error } = useQuery<DataType>(FETCH_TARGETS_LIST);
+  const [expandedRows, setExpandedRows] = useState<string[]>([]);
 
   const handleExpandRow = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.classList.toggle('trVisibility');
-    }
+    setExpandedRows((prevState) =>
+      prevState.includes(id)
+        ? prevState.filter((rowId) => rowId !== id)
+        : [...prevState, id]
+    );
   };
 
   if (loading) {
-    return <div data-testid="loading-animation" />;
+    return <div data-testid="loading-data-table" />;
   }
 
   if (error) {
-    return <div>{error.message}</div>;
+    return <div>{`Error: ${error.message}`}</div>;
   }
 
   return (
@@ -44,7 +46,7 @@ function DataTable() {
       <table>
         <thead>
           <tr>
-            <th style={{ width: '3%' }} aria-label="Empty header" />
+            <th style={{ width: '3%' }} aria-label="Expand/Collapse" />
             <th style={{ width: '15%' }}>Approved Symbol</th>
             <th style={{ width: '32%' }}>Gene Name</th>
             <th style={{ width: '35%' }}>Overall Association Score</th>
@@ -53,14 +55,16 @@ function DataTable() {
         <tbody>
           {data?.disease.associatedTargets.rows.map(
             ({ target, score, datatypeScores }, index) => {
+              const isRowExpanded = expandedRows.includes(target.id + index);
               return (
                 <Fragment key={target.id}>
                   <tr className={target.id}>
                     <td
                       className="cell"
                       onClick={() => handleExpandRow(target.id + index)}
+                      aria-label={isRowExpanded ? 'Collapse row' : 'Expand row'}
                     >
-                      +
+                      {isRowExpanded ? '-' : '+'}
                     </td>
                     <td>
                       <a
@@ -72,15 +76,17 @@ function DataTable() {
                     <td>{target.approvedName}</td>
                     <td>{score.toFixed(3)}</td>
                   </tr>
-                  <tr id={target.id + index} className="trVisibility">
-                    <td colSpan={4} aria-label="Expanded content">
-                      <ChartTab
-                        index={index}
-                        datatypeScores={datatypeScores}
-                        title={target.approvedSymbol}
-                      />
-                    </td>
-                  </tr>
+                  {isRowExpanded && (
+                    <tr id={target.id + index}>
+                      <td colSpan={4} aria-label="Expanded content">
+                        <ChartTab
+                          index={index}
+                          datatypeScores={datatypeScores}
+                          title={target.approvedSymbol}
+                        />
+                      </td>
+                    </tr>
+                  )}
                 </Fragment>
               );
             }
