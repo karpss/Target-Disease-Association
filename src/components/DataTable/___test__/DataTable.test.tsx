@@ -55,6 +55,6 @@ describe('DataTable', () => {
       </MockedProvider>
     );
 
-    expect(screen.getByTestId('loading-animation')).toBeInTheDocument();
+    expect(screen.getByTestId('loading-data-table')).toBeInTheDocument();
   });
 });
